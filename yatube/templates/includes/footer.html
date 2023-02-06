@@ -1,0 +1,8 @@
+{% load tz %}
+{% get_current_timezone as TIME_ZONE %}
+<p>
+  {% timezone TIME_ZONE %}
+    {% now "Y" %}
+  {% endtimezone %}
+  <span style="color:red">Ya</span>tube
+</p>
