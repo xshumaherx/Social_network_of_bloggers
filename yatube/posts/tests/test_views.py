@@ -17,11 +17,13 @@ PROFILE = 'posts:profile'
 DETAIL = 'posts:post_detail'
 EDIT = 'posts:post_edit'
 CREATE = 'posts:post_create'
+FOLLOW = 'posts:follow_index'
 HTML_INDEX = 'posts/index.html'
 HTML_GROUP_LIST = 'posts/group_list.html'
 HTML_PROFILE = 'posts/profile.html'
 HTML_DETAIL = 'posts/post_detail.html'
 HTML_EDIT_CREATE = 'posts/create_post.html'
+HTML_FOLLOW = 'posts/follow.html'
 
 
 class PostPagesTests(TestCase):
@@ -58,7 +60,9 @@ class PostPagesTests(TestCase):
                     kwargs=({'post_id': self.post.pk})): HTML_DETAIL,
             reverse(EDIT,
                     kwargs=({'post_id': self.post.pk})): HTML_EDIT_CREATE,
-            reverse(CREATE): HTML_EDIT_CREATE
+            reverse(CREATE): HTML_EDIT_CREATE,
+            reverse(FOLLOW): HTML_FOLLOW,
+
         }
         for reverse_name, template in templates_page_names.items():
             with self.subTest(template=template):
@@ -147,6 +151,7 @@ class PaginatorViewsTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create(username='user')
+        cls.user1 = User.objects.create(username='user1')
         cls.group = Group.objects.create(
             title='Тестовый заголовок',
             slug='test-slug',
@@ -154,6 +159,8 @@ class PaginatorViewsTest(TestCase):
         )
 
     def setUp(self):
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
         for i in range(TEMP_NUMB_FIRST_PAGE):
             Post.objects.create(
                 text=f'{i}',
