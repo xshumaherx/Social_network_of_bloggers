@@ -1,12 +1,10 @@
-from http import HTTPStatus
-
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from ..models import Comment, Follow, Group, Post
+from ..models import Follow, Group, Post
 
 User = get_user_model()
 TEMP_NUMB_FIRST_PAGE = 13

@@ -47,7 +47,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
-} 
+}
 
 EMPTY_VALUE_DISPLAY = '-пусто-'
 
