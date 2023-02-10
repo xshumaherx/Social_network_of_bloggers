@@ -115,8 +115,6 @@ class PostCreateFormTests(TestCase):
     def test_create_comment(self):
         count_comm = Comment.objects.count()
         form_data = {
-            'post': self.post,
-            'author': self.user,
             'text': COMMENT_TEXT,
         }
         response = self.authorized_client.post(

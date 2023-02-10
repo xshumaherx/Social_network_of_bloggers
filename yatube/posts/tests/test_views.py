@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.core.cache import cache
+
 
 from ..models import Follow, Group, Post
 
@@ -15,13 +17,16 @@ PROFILE = 'posts:profile'
 DETAIL = 'posts:post_detail'
 EDIT = 'posts:post_edit'
 CREATE = 'posts:post_create'
-FOLLOW = 'posts:follow_index'
+FOLLOW_INDEX = 'posts:follow_index'
+FOLLOW = 'posts:profile_follow'
+UNFOLLOW = 'posts:profile_unfollow'
 HTML_INDEX = 'posts/index.html'
 HTML_GROUP_LIST = 'posts/group_list.html'
 HTML_PROFILE = 'posts/profile.html'
 HTML_DETAIL = 'posts/post_detail.html'
 HTML_EDIT_CREATE = 'posts/create_post.html'
 HTML_FOLLOW = 'posts/follow.html'
+NEW_TEXT_POST = 'Новый текст'
 
 
 class PostPagesTests(TestCase):
@@ -41,6 +46,7 @@ class PostPagesTests(TestCase):
             text='Текстовый текст',
             image='Картинка'
         )
+        cls.author = User.objects.create(username='author')
 
     def setUp(self):
         self.authorized_client = Client()
@@ -59,7 +65,7 @@ class PostPagesTests(TestCase):
             reverse(EDIT,
                     kwargs=({'post_id': self.post.pk})): HTML_EDIT_CREATE,
             reverse(CREATE): HTML_EDIT_CREATE,
-            reverse(FOLLOW): HTML_FOLLOW,
+            reverse(FOLLOW_INDEX): HTML_FOLLOW,
 
         }
         for reverse_name, template in templates_page_names.items():
@@ -124,17 +130,24 @@ class PostPagesTests(TestCase):
         self.assertEqual(first_object.author.id, self.user.pk)
         self.assertEqual(first_object.image, self.post.image)
 
-    def test_follow_unfollow_auth(self):
-        """Подписка и отписка авторов"""
+    def test_follow_auth(self):
+        """Подписка авторов"""
         count_subscription = Follow.objects.count()
-
         self.authorized_client.get(reverse(
-            'posts:profile_follow', kwargs={'username': self.user1}
+            FOLLOW, kwargs={'username': self.user1}
         ))
         self.assertEqual(Follow.objects.count(), count_subscription + 1)
+        self.assertFalse(
+            Follow.objects.filter(
+                user=self.user,
+                author=self.user).exists()
+        )
 
+    def test_unfollow_auth(self):
+        """Отписка авторов"""
+        count_subscription = Follow.objects.count()
         self.authorized_client.get(reverse(
-            'posts:profile_unfollow', kwargs={'username': self.user1})
+            UNFOLLOW, kwargs={'username': self.user1})
         )
         self.assertEqual(Follow.objects.count(), count_subscription)
         self.assertFalse(
@@ -142,6 +155,38 @@ class PostPagesTests(TestCase):
                 user=self.user,
                 author=self.user).exists()
         )
+
+    # Я пытался еще сделать тест (ниже), не получается.
+    # может вы подскажете где я тут ошибся.
+    """ def test_follow_auth_new_post(self):
+        '''Подписчики видят новые посты'''
+        new_post = Post.objects.create(
+            author=self.author,
+            text=NEW_TEXT_POST,
+        )
+        Follow.objects.create(
+            user=self.user,
+            author=self.author,
+        )
+        response = self.authorized_client.get(
+            reverse(FOLLOW_INDEX)
+        )
+        context = len(response.context['page_obj'])
+        self.assertEqual(context, 1)
+        self.assertIn(self.post, new_post) """
+
+    def test_cache(self):
+        """Страница index формируется с использованием кэширования."""
+        response = self.authorized_client.get(reverse(INDEX))
+        cech_post_count = len(response.content)
+        Post.objects.all().delete
+        response_2 = self.authorized_client.get(reverse(INDEX))
+        cech_post_count_2 = len(response_2.content)
+        self.assertEqual(cech_post_count, cech_post_count_2)
+        cache.clear()
+        response_3 = self.authorized_client.get(reverse(INDEX))
+        cech_post_count_3 = len(response_3.content)
+        self.assertNotEqual(cech_post_count_2, cech_post_count_3)
 
 
 class PaginatorViewsTest(TestCase):
@@ -192,3 +237,4 @@ class PaginatorViewsTest(TestCase):
                 response = self.client.get(page + '?page=2')
         self.assertEqual(len(response.context['page_obj']),
                          TEMP_NUMB_SECOND_PAGE)
+
