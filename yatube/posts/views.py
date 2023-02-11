@@ -136,6 +136,9 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     """'Подписка на автора'"""
+    if request.user.username == username:
+        return HttpResponseRedirect(
+            reverse(PROFILE, kwargs={'username': username}))
     author = get_object_or_404(User, username=username)
     Follow.objects.get_or_create(user=request.user, author=author)
     return HttpResponseRedirect(
@@ -150,3 +153,12 @@ def profile_unfollow(request, username):
         Follow, user=request.user, author__username=username)
     follow.delete()
     return redirect(template, username=username)
+
+
+def page_not_found(request, exception):
+    return render(
+        request,
+        "core/404.html",
+        {"path": request.path},
+        status=404
+    )

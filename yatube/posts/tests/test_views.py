@@ -237,4 +237,3 @@ class PaginatorViewsTest(TestCase):
                 response = self.client.get(page + '?page=2')
         self.assertEqual(len(response.context['page_obj']),
                          TEMP_NUMB_SECOND_PAGE)
-
