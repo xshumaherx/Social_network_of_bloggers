@@ -137,11 +137,11 @@ def follow_index(request):
 def profile_follow(request, username):
     """'Подписка на автора'"""
     if request.user.username == username:
-        return HttpResponseRedirect(
+        return redirect(
             reverse(PROFILE, kwargs={'username': username}))
     author = get_object_or_404(User, username=username)
     Follow.objects.get_or_create(user=request.user, author=author)
-    return HttpResponseRedirect(
+    return redirect(
         reverse(PROFILE, kwargs={'username': username}))
 
 

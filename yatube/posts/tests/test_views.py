@@ -1,10 +1,9 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
-from django.core.cache import cache
-
 
 from ..models import Follow, Group, Post
 
@@ -34,7 +33,6 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create(username='user')
-        cls.user1 = User.objects.create(username='user1')
         cls.group = Group.objects.create(
             title='Тестовый заголовок',
             slug='test-slug',
@@ -47,6 +45,12 @@ class PostPagesTests(TestCase):
             image='Картинка'
         )
         cls.author = User.objects.create(username='author')
+        cls.follower = User.objects.create(
+            username='follower',
+        )
+        cls.following = User.objects.create(
+            username='following',
+        )
 
     def setUp(self):
         self.authorized_client = Client()
@@ -133,47 +137,27 @@ class PostPagesTests(TestCase):
     def test_follow_auth(self):
         """Подписка авторов"""
         count_subscription = Follow.objects.count()
+        self.authorized_client.force_login(self.follower)
         self.authorized_client.get(reverse(
-            FOLLOW, kwargs={'username': self.user1}
+            FOLLOW, kwargs={'username': self.following}
         ))
         self.assertEqual(Follow.objects.count(), count_subscription + 1)
-        self.assertFalse(
-            Follow.objects.filter(
-                user=self.user,
-                author=self.user).exists()
-        )
+        follow = Follow.objects.first()
+        self.assertEqual(follow.author, self.following)
+        self.assertEqual(follow.user, self.follower)
 
     def test_unfollow_auth(self):
         """Отписка авторов"""
-        count_subscription = Follow.objects.count()
+        self.authorized_client.force_login(self.follower)
         self.authorized_client.get(reverse(
-            UNFOLLOW, kwargs={'username': self.user1})
-        )
-        self.assertEqual(Follow.objects.count(), count_subscription)
-        self.assertFalse(
-            Follow.objects.filter(
-                user=self.user,
-                author=self.user).exists()
-        )
-
-    # Я пытался еще сделать тест (ниже), не получается.
-    # может вы подскажете где я тут ошибся.
-    """ def test_follow_auth_new_post(self):
-        '''Подписчики видят новые посты'''
-        new_post = Post.objects.create(
-            author=self.author,
-            text=NEW_TEXT_POST,
-        )
-        Follow.objects.create(
-            user=self.user,
-            author=self.author,
-        )
-        response = self.authorized_client.get(
-            reverse(FOLLOW_INDEX)
-        )
-        context = len(response.context['page_obj'])
-        self.assertEqual(context, 1)
-        self.assertIn(self.post, new_post) """
+            FOLLOW, kwargs={'username': self.following}
+        ))
+        self.assertEqual(Follow.objects.count(), 1)
+        self.authorized_client.get(reverse(
+            UNFOLLOW,
+            kwargs={'username': self.following}
+        ))
+        self.assertEqual(Follow.objects.count(), 0)
 
     def test_cache(self):
         """Страница index формируется с использованием кэширования."""
