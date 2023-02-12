@@ -142,9 +142,11 @@ class PostPagesTests(TestCase):
             FOLLOW, kwargs={'username': self.following}
         ))
         self.assertEqual(Follow.objects.count(), count_subscription + 1)
-        follow = Follow.objects.first()
-        self.assertEqual(follow.author, self.following)
-        self.assertEqual(follow.user, self.follower)
+        self.assertTrue(
+            Follow.objects.filter(
+                user=self.follower,
+                author=self.following).exists()
+        )
 
     def test_unfollow_auth(self):
         """Отписка авторов"""
@@ -152,12 +154,15 @@ class PostPagesTests(TestCase):
         self.authorized_client.get(reverse(
             FOLLOW, kwargs={'username': self.following}
         ))
-        self.assertEqual(Follow.objects.count(), 1)
         self.authorized_client.get(reverse(
             UNFOLLOW,
             kwargs={'username': self.following}
         ))
-        self.assertEqual(Follow.objects.count(), 0)
+        self.assertFalse(
+            Follow.objects.filter(
+                user=self.follower,
+                author=self.following).exists()
+        )
 
     def test_cache(self):
         """Страница index формируется с использованием кэширования."""
