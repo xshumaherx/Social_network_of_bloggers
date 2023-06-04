@@ -7,9 +7,15 @@
 {% block content %}
   <div class="container py-5">
     <h1>Последние обновления на сайте</h1>
-    <article>
+    <form action="" method="get">
+      <input type="text" name="q" size="30" placeholder="Поиск..." 
+        style="float: right" value="{{ query|default:'' }}">
+      <input type="date" name="date_of" value="{{ date_of|default:'' }}">
+      <input type="date" name="date_to" value="{{ date_to|default:'' }}">
+      <input type="submit" value="Найти">
+    </form>
+    <article> 
       {% include 'includes/switcher.html' %}
-        {% cache 20 index_page %}
           {% for post in page_obj %}
             <ul>
               <li>
@@ -20,7 +26,7 @@
               </li>
             </ul>
             {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-            <img class="card-img my-2" src="{{ im.url }}">
+              <img class="card-img my-2" src="{{ im.url }}">
             {% endthumbnail %}
             <p>{{ post.text }}</p>
             {% if post.group %}
@@ -29,7 +35,6 @@
             {% endif %}
             {% if not forloop.last %}<hr>{% endif %}
           {% endfor %}
-        {% endcache %}
       {% include 'includes/paginator.html' %}
     </article>
   </div>

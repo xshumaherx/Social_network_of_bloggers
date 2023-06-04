@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -25,10 +28,45 @@ def func_paginator(request, post_list):
 
 def index(request):
     template = HTML_INDEX
-    post_list = Post.objects.select_related('author', 'group')
+    post_list = Post.objects.select_related('author')
+
+    query = request.GET.get('q')
+    date_of = request.GET.get('date_of')
+    date_to = request.GET.get('date_to')
+
+    if query:
+        post_list = post_list.filter(
+            Q(text__icontains=query)
+            | Q(author__username__icontains=query)
+        )
+
+    if date_of and date_to:
+        date_of_obj, date_to_obj = [
+            datetime.strptime(value, '%Y-%m-%d').date()
+            for value in (date_of, date_to)
+        ]
+        post_list = post_list.filter(
+            pub_date__range=[date_of_obj, date_to_obj])
+
+    if date_of and not date_to:
+        post_list = post_list.filter(pub_date__date=date_of)
+
+    sort = request.GET.get('sort', 'pub_date')
+    direction = request.GET.get('direction', 'desc')
+    if direction == 'desc':
+        order = '-' + sort
+    else:
+        order = sort
+    post_list = post_list.order_by(order)
+
     page_obj = func_paginator(request, post_list)
     context = {
         'page_obj': page_obj,
+        'query': query,
+        'date_of': date_of,
+        'date_to': date_to,
+        'sort': sort,
+        'direction': direction,
     }
     return render(request, template, context)
 
