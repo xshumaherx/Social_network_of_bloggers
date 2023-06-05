@@ -17,9 +17,12 @@ class Group(models.Model):
 
 
 class Post(models.Model):
+    titul = models.CharField(
+        'Ключевое слово',
+        max_length=50,
+    )
     text = models.TextField(
         'Текст поста',
-        help_text='Введите текст поста'
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
@@ -46,8 +49,14 @@ class Post(models.Model):
         blank=True,
     )
 
-    def __str__(self):
-        return self.text[:15]
+    def short_text(self):
+        index = self.text.find('.')
+        if index == -1:
+            # Точка не найдена, возвращаем первые 50 символов
+            return self.text[:100] + '...Продолжение следует'
+        else:
+            # Возвращаем текст до точки
+            return self.text[:index + 1].strip() + '  Продолжение следует...'
 
     class Meta:
         ordering = ['-pub_date']

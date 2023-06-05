@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -42,11 +43,11 @@ def index(request):
 
     if date_of and date_to:
         date_of_obj, date_to_obj = [
-            datetime.strptime(value, '%Y-%m-%d').date()
+            datetime.strptime(value, '%Y-%m-%d').date().strftime('%Y-%m-%d')
             for value in (date_of, date_to)
         ]
-        post_list = post_list.filter(
-            pub_date__range=[date_of_obj, date_to_obj])
+        post_list.filter(
+            pub_date__gte=date_of_obj, pub_date__lte=date_to_obj)
 
     if date_of and not date_to:
         post_list = post_list.filter(pub_date__date=date_of)
@@ -144,7 +145,12 @@ def post_edit(request, post_id):
         else:
             if form.is_valid():
                 form.save()
-            return redirect(DETAIL, post.id)
+                return redirect(DETAIL, post_id)
+            else:
+                return render(request, template, context)
+    else:
+        return HttpResponseRedirect(reverse(
+            DETAIL, args=(post_id,)))
 
 
 @login_required
