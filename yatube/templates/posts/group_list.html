@@ -23,8 +23,6 @@
         <img class="card-img my-2" src="{{ im.url }}">
         {% endthumbnail %}
         <p>{{ post.text }}</p>
-        <a href="{% url 'posts:post_detail' post.pk %}">
-          Подробная информация</a>
         {% if not forloop.last %}<hr>{% endif %}
       {% endfor %}
     </article>
