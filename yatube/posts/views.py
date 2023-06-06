@@ -46,7 +46,7 @@ def index(request):
             datetime.strptime(value, '%Y-%m-%d').date().strftime('%Y-%m-%d')
             for value in (date_of, date_to)
         ]
-        post_list.filter(
+        post_list = post_list.filter(
             pub_date__gte=date_of_obj, pub_date__lte=date_to_obj)
 
     if date_of and not date_to:

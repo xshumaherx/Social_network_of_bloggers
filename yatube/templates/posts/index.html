@@ -24,15 +24,25 @@
         {% for post in page_obj %}
           <tr>
             <td>
-              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal{{ post.pk }}">
-                {{ post.titul }}
+              <button type="button" class="btn btn-primary btn-lg btn-block" 
+                data-toggle="modal" data-target="#myModal{{ post.pk }}">
+                  {{ post.titul }}
               </button>
               <div class="modal fade" id="myModal{{ post.pk }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
+                      <h4 class="modal-title text-left" id="myModalLabel{{ post.pk }}">{{ post.titul }}</h4>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="myModalLabel{{ post.pk }}">{{ post.titul }}</h4>
+                    </div>
+                    <div class="modal-body">
+                      Автор:
+                      <a href="{% url 'posts:profile' post.author.username %}">
+                        {{ post.author.get_full_name }}
+                      </a>
+                    </div>
+                    <div class="modal-body">
+                      Дата публикации: {{ post.pub_date|date:"d E Y" }}
                     </div>
                     <div class="modal-body">
                       {{ post.short_text }}
