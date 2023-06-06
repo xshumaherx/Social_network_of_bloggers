@@ -8,38 +8,39 @@
   <div class="container py-5">
     <h1>Последние обновления на сайте</h1>
       <form action="" method="get">
-          <input type="text" id="search-field" name="q" size="30" placeholder="Поиск..."  
-            style="float: right" value="{{ query|default:'' }}" 
+          <input type="text" id="search-field" name="q" size="30" placeholder="Поиск..."
+            style="float: right" value="{{ query|default:'' }}"
             title="Введите слово или предложение которое хотите найти в текстах"> 
         <label for="date_of">Выберите дату от:</label>
-        <input type="date" id="date_of" name="date_of" value="{{ date_of|default:'' }}" title="Введите дату, от какого числа(включительно)">
+        <input type="date" id="date_of" name="date_of" value="{{ date_of|default:'' }}" 
+          title="Введите дату, от какого числа(включительно)">
         <br>
         <label for="date_to">Выберите дату до:</label>
-        <input type="date" id="date_to" name="date_to" value="{{ date_to|default:'' }}" title="Введите дату, до какого числа(включительно)">
+        <input type="date" id="date_to" name="date_to" value="{{ date_to|default:'' }}" 
+          title="Введите дату, до какого числа(включительно)">
         <input type="submit" value="Найти">
       </form>
     <article> 
       {% include 'includes/switcher.html' %}
-      <table>
+      <table width="400">
         {% for post in page_obj %}
           <tr>
             <td>
-              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal{{ post.pk }}">
-                {{ post.titul }}
-              </button>
-              <div class="modal fade" id="myModal{{ post.pk }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="myModalLabel{{ post.pk }}">{{ post.titul }}</h4>
-                    </div>
-                    <div class="modal-body">
+              <div class="panel-group" id="{{ post.titul }}-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="{{ post.titul }}-heading">
+                    <h4 class="panel-title">
+                      <a style="color: #f8f9fa" role="button" data-toggle="collapse" 
+                        data-parent="#{{ post.titul }}-group" href="#{{ post.titul }}-collapse" 
+                        aria-expanded="true" aria-controls="{{ post.titul }}-collapse">
+                        {{ post.titul }}
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="{{ post.titul }}-collapse" class="panel-collapse collapse in" 
+                    role="tabpanel" aria-labelledby="{{ post.titul }}-heading">
+                    <div class="panel-body">
                       {{ post.short_text }}
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                      <a href="{% url 'posts:post_detail' post.pk %}" class="btn btn-primary">Подробнее</a>
                     </div>
                   </div>
                 </div>
