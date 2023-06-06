@@ -20,36 +20,21 @@
           title="Введите дату, до какого числа(включительно)">
         <input type="submit" value="Найти">
       </form>
-    <article> 
-      {% include 'includes/switcher.html' %}
-      <table width="400">
-        {% for post in page_obj %}
-          <tr>
-            <td>
-              <div class="panel-group" id="{{ post.titul }}-group" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                  <div class="panel-heading" role="tab" id="{{ post.titul }}-heading">
-                    <h4 class="panel-title">
-                      <a style="color: #f8f9fa" role="button" data-toggle="collapse" 
-                        data-parent="#{{ post.titul }}-group" href="#{{ post.titul }}-collapse" 
-                        aria-expanded="true" aria-controls="{{ post.titul }}-collapse">
-                        {{ post.titul }}
-                      </a>
-                    </h4>
-                  </div>
-                  <div id="{{ post.titul }}-collapse" class="panel-collapse collapse in" 
-                    role="tabpanel" aria-labelledby="{{ post.titul }}-heading">
-                    <div class="panel-body">
-                      {{ post.short_text }}
-                    </div>
-                  </div>
+      <article> 
+        {% include 'includes/switcher.html' %}
+        <table >
+          {% for post in page_obj %}
+            <tr>
+              <td class="text-center">
+                {{ post.titul }}
+                <div class="hover-panel">
+                  {{ post.short_text }}
                 </div>
-              </div>
-            </td>
-          </tr>
-        {% endfor %}
-      </table>
-      {% include 'includes/paginator.html' %}
-    </article>
-  </div>
-{% endblock %}
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+        {% include 'includes/paginator.html' %}
+      </article>
+    </div>
+  {% endblock %}
