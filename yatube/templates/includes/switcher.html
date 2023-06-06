@@ -1,7 +1,7 @@
 {% if user.is_authenticated %}
     <div class="row my-3">
         <ul class="nav nav-tabs">
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
                 <a style="color: #212529; vertical-align: bottom"
                     class="nav-link link-light"
                     href="?sort=pub_date&direction={% if direction == 'desc' %}asc{% else %}desc{% endif %}">
@@ -10,7 +10,7 @@
                     {% if direction == 'desc' %} &#9660; {% else %} &#9650; {% endif %}
                     {% endif %}
                 </a>
-            </li>
+            </li> {% endcomment %}
             {% comment %} <li class="nav-item">
                 <a
                 class="nav-link link-light"

@@ -27,13 +27,8 @@ def func_paginator(request, post_list):
     return paginator.get_page(page_number)
 
 
-def index(request):
-    template = HTML_INDEX
+def get_post_list(query, date_of, date_to, sort='pub_date', direction='desc'):
     post_list = Post.objects.select_related('author')
-
-    query = request.GET.get('q')
-    date_of = request.GET.get('date_of')
-    date_to = request.GET.get('date_to')
 
     if query:
         post_list = post_list.filter(
@@ -52,13 +47,24 @@ def index(request):
     if date_of and not date_to:
         post_list = post_list.filter(pub_date__date=date_of)
 
-    sort = request.GET.get('sort', 'pub_date')
-    direction = request.GET.get('direction', 'desc')
     if direction == 'desc':
         order = '-' + sort
     else:
         order = sort
     post_list = post_list.order_by(order)
+
+    return post_list
+
+
+def index(request):
+    template = HTML_INDEX
+    query = request.GET.get('q')
+    date_of = request.GET.get('date_of')
+    date_to = request.GET.get('date_to')
+    sort = request.GET.get('sort', 'pub_date')
+    direction = request.GET.get('direction', 'desc')
+
+    post_list = get_post_list(query, date_of, date_to, sort, direction)
 
     page_obj = func_paginator(request, post_list)
     context = {

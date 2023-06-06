@@ -59,7 +59,7 @@ class Post(models.Model):
             return self.text[:index + 1].strip() + '  Продолжение следует...'
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ['pub_date']
         default_related_name = 'posts'
 
 
