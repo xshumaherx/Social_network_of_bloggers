@@ -14,6 +14,7 @@ from .models import Comment, Follow, Group, Post, User
 PROFILE = 'posts:profile'
 DETAIL = 'posts:post_detail'
 HTML_INDEX = 'posts/index.html'
+HTML_INDEX_SEARCH = 'posts/index_search.html'
 HTML_GROUP_LIST = 'posts/group_list.html'
 HTML_PROFILE = 'posts/profile.html'
 HTML_DETAIL = 'posts/post_detail.html'
@@ -56,8 +57,8 @@ def get_post_list(query, date_of, date_to, sort='pub_date', direction='desc'):
     return post_list
 
 
-def index(request):
-    template = HTML_INDEX
+def index_search(request):
+    template = HTML_INDEX_SEARCH
     query = request.GET.get('q')
     date_of = request.GET.get('date_of')
     date_to = request.GET.get('date_to')
@@ -74,6 +75,16 @@ def index(request):
         'date_to': date_to,
         'sort': sort,
         'direction': direction,
+    }
+    return render(request, template, context)
+
+
+def index(request):
+    template = HTML_INDEX
+    post_list = Post.objects.select_related('author', 'group')
+    page_obj = func_paginator(request, post_list)
+    context = {
+        'page_obj': page_obj,
     }
     return render(request, template, context)
 

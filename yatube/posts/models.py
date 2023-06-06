@@ -53,10 +53,10 @@ class Post(models.Model):
         index = self.text.find('.')
         if index == -1:
             # Точка не найдена, возвращаем первые 50 символов
-            return self.text[:100] + '...Продолжение следует'
+            return self.text[:100] + '...Подробнее'
         else:
             # Возвращаем текст до точки
-            return self.text[:index + 1].strip() + '  Продолжение следует...'
+            return self.text[:index + 1].strip() + '  Подробнее...'
 
     class Meta:
         ordering = ['pub_date']
