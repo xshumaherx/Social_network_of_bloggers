@@ -28,32 +28,38 @@
         </select>
         <button type="submit" class="btn btn-primary" id="myButton">Применить</button>
       </form>
-        <article>
+      <article>
         {% include 'includes/switcher.html' %}
           {% for post in page_obj %}
-            <ul>
-              <li>
-                Автор:
-                <a href="{% url 'posts:profile' post.author.username %}">
-                  {{ post.author.get_full_name }}
-                </a>
-              </li>
-              <li>
-                Дата публикации: {{ post.pub_date|date:"d E Y" }}
-              </li>
-            </ul>
-            <div style="text-align:center;">
-              <h1 style="font-size:48px; font-weight:bold; color:#f9fafb;">{{ post.titul }}</h1>
+            <div class="post-section">
+              <ul>
+                <li>
+                  Автор:
+                  <a href="{% url 'posts:profile' post.author.username %}">
+                    {{ post.author.get_full_name }}
+                  </a>
+                </li>
+                <li>
+                  Дата публикации: {{ post.pub_date|date:"d E Y" }}
+                </li>
+              </ul>
+              <div style="text-align:center;">
+                <h1 style="font-size:38px; font-weight:bold; color:#f9fafb;">{{ post.titul }}</h1>
+              </div>
+            
+            <div>
+              {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                <img class="card-img my-2" src="{{ im.url }}">
+              {% endthumbnail %}
             </div>
-            {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-              <img class="card-img my-2" src="{{ im.url }}">
-            {% endthumbnail %}
-            <p>{{ post.short_text }}</p>
-            <a href="{% url 'posts:post_detail' post.pk %}">
-              Подробная информация</a>
+              <p>{{ post.short_text }}</p>
+              <a href="{% url 'posts:post_detail' post.pk %}">
+                Подробная информация</a>
+              
+            </div>
             {% if not forloop.last %}<hr>{% endif %}
-          {% endfor %}
-        {% include 'includes/paginator.html' %}
+            {% endfor %}
+          {% include 'includes/paginator.html' %}
         </article>
   </div>
 {% endblock %}
