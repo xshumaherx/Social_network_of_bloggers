@@ -6,7 +6,7 @@
           <a class="page-link" href="?page=1">Первая</a></li>
         <li class="page-item">
           <a class="page-link"
-            href="?page={{ page_obj.previous_page_number }}">
+            href="?page={{ page_obj.previous_page_number|addslashes }}{{ page_obj.url_with_params }}">
             Предыдущая
           </a>
         </li>

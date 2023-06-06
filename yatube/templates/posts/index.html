@@ -20,7 +20,7 @@
       <select name="sort" id="sort">
         <option value="pub_date" {% if sort == 'pub_date' %}selected{% endif %}>Дате</option>
         <option value="author" {% if sort == 'author' %}selected{% endif %}>Автору</option>
-        <option value="titul" {% if sort == 'titul' %}selected{% endif %}>По слову</option>
+        <option value="titul" {% if sort == 'titul' %}selected{% endif %}>Заголовок</option>
       </select>
       <label for="direction">Направление:</label>
       <select name="direction" id="direction">
@@ -30,7 +30,10 @@
       <button type="submit" class="btn btn-primary">Применить</button>
     </form>
     <br>
-    <article> 
+      <p style="color: #000;padding: 10px;
+      margin: 20px;font-size: 26px;">Всего
+        <strong>{{ page_obj.paginator.count }}</strong> постов</p>
+       <article> 
       {% include 'includes/switcher.html' %}
       <table>
         {% for post in page_obj %}
@@ -67,7 +70,10 @@
                 </div>
               </div>
             </td>
-          </tr>
+            {% empty %}
+            <tr>
+              <td><h3 style="color:#fff">Публикации не найдены!</h3></td>
+            </tr>
         {% endfor %}
       </table>
       {% include 'includes/paginator.html' %}
