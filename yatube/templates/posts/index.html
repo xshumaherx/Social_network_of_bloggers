@@ -7,21 +7,6 @@
 {% block content %}
   <div class="container py-5">
     <h1>Последние обновления на сайте</h1>
-    {% comment %} <form action="" method="get">
-      <input type="text" id="search-field" name="q" size="30" placeholder="Поиск..." 
-      style="float: right" value="{{ query|default:'' }}" 
-      title="Введите слово или предложение которое хотите найти в текстах"> 
-      <label for="date_of">Выберите дату от:</label>
-      <input type="date" id="date_of" name="date_of" value="{{ date_of|default:'' }}"
-      title="Введите дату, от какого числа(включительно)">
-      
-    
-      <label for="date_to">Выберите дату до:</label>
-      <input type="date" id="date_to" name="date_to" value="{{ date_to|default:'' }}"
-       title="Введите дату, до какого числа(включительно)">
-      <input type="submit" value="Найти">
-    </form> {% endcomment %}
-    
     <form action="" method="get">
       <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Поиск..."
         title="Введите слово или предложение которое хотите найти в текстах">
@@ -35,13 +20,14 @@
       <select name="sort" id="sort">
         <option value="pub_date" {% if sort == 'pub_date' %}selected{% endif %}>Дате</option>
         <option value="author" {% if sort == 'author' %}selected{% endif %}>Автору</option>
+        <option value="titul" {% if sort == 'titul' %}selected{% endif %}>По слову</option>
       </select>
       <label for="direction">Направление:</label>
       <select name="direction" id="direction">
         <option value="desc" {% if direction == 'desc' %}selected{% endif %}>По убыванию</option>
         <option value="asc" {% if direction == 'asc' %}selected{% endif %}>По возрастанию</option>
       </select>
-      <button type="submit">Применить</button>
+      <button type="submit" class="btn btn-primary">Применить</button>
     </form>
     <br>
     <article> 
