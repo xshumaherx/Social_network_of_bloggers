@@ -55,7 +55,6 @@
               <p>{{ post.short_text }}</p>
               <a href="{% url 'posts:post_detail' post.pk %}">
                 Подробная информация</a>
-              
             </div>
             {% if not forloop.last %}<hr>{% endif %}
             {% endfor %}
