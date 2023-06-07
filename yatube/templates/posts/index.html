@@ -6,59 +6,127 @@
 {% block content %}
   <div class="container py-5">
     <h1>Последние обновления на сайте</h1>
-      <form action="{% url "posts:index_search" %}" method="get" onsubmit="return waitToSubmit(event)">
-        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Поиск..."
-               title="Введите слово или предложение которое хотите найти в текстах">
-        <label for="date_of">Дата от:</label>
-        <input type="date" name="date_of" id="date_of" value="{{ date_of|default:'' }}"
-               title="Введите дату, от какого числа(включительно)">
-        <label for="date_to">до:</label>
-        <input type="date" name="date_to" id="date_to" value="{{ date_to|default:'' }}"
-               title="Введите дату, до какого числа(включительно)">
-        <label for="sort">Сортировать по:</label>
-        <select name="sort" id="sort">
-          <option value="pub_date" {% if sort == 'pub_date' %}selected{% endif %}>Дате</option>
-          <option value="author" {% if sort == 'author' %}selected{% endif %}>Автору</option>
-          <option value="titul" {% if sort == 'titul' %}selected{% endif %}>Заголовок</option>
-        </select>
-        <label for="direction">Направление:</label>
-        <select name="direction" id="direction">
-          <option value="desc" {% if direction == 'desc' %}selected{% endif %}>По убыванию</option>
-          <option value="asc" {% if direction == 'asc' %}selected{% endif %}>По возрастанию</option>
-        </select>
-        <button type="submit" class="btn btn-primary" id="myButton">Применить</button>
-      </form>
-      <article>
-        {% include 'includes/switcher.html' %}
-          {% for post in page_obj %}
-            <div class="post-section">
-              <ul>
-                <li>
-                  Автор:
-                  <a href="{% url 'posts:profile' post.author.username %}">
-                    {{ post.author.get_full_name }}
-                  </a>
-                </li>
-                <li>
-                  Дата публикации: {{ post.pub_date|date:"d E Y" }}
-                </li>
-              </ul>
-              <div style="text-align:center;">
-                <h1 style="font-size:38px; font-weight:bold; color:#f9fafb;">{{ post.titul }}</h1>
-              </div>
-            
-            <div>
-              {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-                <img class="card-img my-2" src="{{ im.url }}">
-              {% endthumbnail %}
-            </div>
-              <p>{{ post.short_text }}</p>
-              <a href="{% url 'posts:post_detail' post.pk %}">
-                Подробная информация</a>
-            </div>
-            {% if not forloop.last %}<hr>{% endif %}
+    <form action="" method="get">
+      <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Поиск..."
+             title="Введите слово или предложение которое хотите найти в тексте или заголовках">
+      <label for="date_of">Дата от:</label>
+      <input type="date" name="date_of" id="date_of" value="{{ date_of|default:'' }}"
+             title="Введите дату, от какого числа(включительно)">
+      <label for="date_to">до:</label>
+      <input type="date" name="date_to" id="date_to" value="{{ date_to|default:'' }}"
+             title="Введите дату, до какого числа(включительно)">
+      <label for="sort">Сортировать по:</label>
+      <select name="sort" id="sort">
+        <option value="pub_date" {% if sort == 'pub_date' %}selected{% endif %}>Дате</option>
+        <option value="author" {% if sort == 'author' %}selected{% endif %}>Автору</option>
+        <option value="titul" {% if sort == 'titul' %}selected{% endif %}>Заголовок</option>
+      </select>
+      <label for="direction">Сортировка:</label>
+      <select name="direction" id="direction">
+        <option value="desc" {% if direction == 'desc' %}selected{% endif %}>По убыванию</option>
+        <option value="asc" {% if direction == 'asc' %}selected{% endif %}>По возрастанию</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Применить</button>
+    </form>
+    <br>
+    <article>
+      {% include 'includes/switcher.html' %}
+      <div style="display: flex;">
+        <div style="height: 400px; overflow-y: auto;">
+          <table>
+            {% for post in page_obj %}
+            <tr>
+              <td>
+                <ul class="list-group">
+                  <li class="list-group-item telegram-list__item" data-bs-toggle="modal" data-bs-target="#myModal{{ post.pk }}">
+                    <a href="#myModal{{ post.pk }}" data-bs-toggle="modal" data-bs-target="#myModal{{ post.pk }}">
+                      <div style="justify-content: space-between; font-size: 13px;">
+                        <div style="text-align: left">{{ post.author.get_full_name }}</div>
+                        <div style="text-align: right">{{ post.pub_date|date:"d E Y" }}</div>
+                      </div>
+                      <div style="text-align: center;">{{ post.titul }}</div>
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
             {% endfor %}
-          {% include 'includes/paginator.html' %}
-        </article>
+          </table>
+        </div>
+        <div>
+          <table>
+            {% for post in page_obj %}
+            <tr>
+              <td>
+                <!-- контент правого столбца -->
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td>
+                <h3 style="color:#fff">Публикации не найдены!</h3>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+
+
+      {% comment %} <table>
+        {% for post in page_obj %}
+        <tr>
+          <td>
+            <ul class="list-group">
+              <li class="list-group-item telegram-list__item" data-bs-toggle="modal" data-bs-target="#myModal{{ post.pk }}">
+                <a href="#myModal{{ post.pk }}" data-bs-toggle="modal" data-bs-target="#myModal{{ post.pk }}">
+                  <div style="justify-content: space-between; font-size: 13px;">
+                    <div style="text-align: left">{{ post.author.get_full_name }}</div>
+                    <div style="text-align: right">{{ post.pub_date|date:"d E Y" }}</div>
+                  </div>
+                  <div style="text-align: center;">{{ post.titul }}</div>
+                </a>
+              </li>
+            </ul>
+          </td>
+        </tr> {% endcomment %}
+
+          {% comment %} <td>
+            <div class="modal fade" id="myModal{{ post.pk }}" tabindex="-1" aria-labelledby="myModal{{ post.pk }}Label"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title text-left" id="myModalLabel{{ post.pk }}">{{ post.titul }}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                  </div>
+                  <div class="modal-body">
+                    Автор:
+                    <a href="{% url 'posts:profile' post.author.username %}">
+                      {{ post.author.get_full_name }}
+                    </a>
+                  </div>
+                  <div class="modal-body">
+                    Дата публикации: {{ post.pub_date|date:"d E Y" }}
+                  </div>
+                  <div class="modal-body">
+                    {{ post.short_text }}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                    <a href="{% url 'posts:post_detail' post.pk %}" class="btn btn-primary">Подробнее</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td> {% endcomment %}
+        
+      <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
+        Записей <strong>{{ page_obj.count }}</strong> из <strong>{{ total_posts }}</strong>
+    </p>
+      {% comment %} {% include 'includes/paginator.html' %} {% endcomment %}
+    </article>
   </div>
 {% endblock %}

@@ -3,13 +3,12 @@
   Последние обновления на сайте
 {% endblock %}
 {% load thumbnail %}
-
 {% block content %}
   <div class="container py-5">
     <h1>Последние обновления на сайте</h1>
     <form action="" method="get">
       <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Поиск..."
-             title="Введите слово или предложение которое хотите найти в текстах">
+             title="Введите слово или предложение которое хотите найти в тексте или заголовках">
       <label for="date_of">Дата от:</label>
       <input type="date" name="date_of" id="date_of" value="{{ date_of|default:'' }}"
              title="Введите дату, от какого числа(включительно)">
@@ -22,7 +21,7 @@
         <option value="author" {% if sort == 'author' %}selected{% endif %}>Автору</option>
         <option value="titul" {% if sort == 'titul' %}selected{% endif %}>Заголовок</option>
       </select>
-      <label for="direction">Направление:</label>
+      <label for="direction">Сортировка:</label>
       <select name="direction" id="direction">
         <option value="desc" {% if direction == 'desc' %}selected{% endif %}>По убыванию</option>
         <option value="asc" {% if direction == 'asc' %}selected{% endif %}>По возрастанию</option>
@@ -76,7 +75,7 @@
           </tr>
         {% endfor %}
       </table>
-      {% include 'includes/paginator.html' %}
+      {% comment %} {% include 'includes/paginator.html' %} {% endcomment %}
     </article>
   </div>
 {% endblock %}

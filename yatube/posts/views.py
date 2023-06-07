@@ -14,7 +14,7 @@ from .models import Comment, Follow, Group, Post, User
 PROFILE = 'posts:profile'
 DETAIL = 'posts:post_detail'
 HTML_INDEX = 'posts/index.html'
-HTML_INDEX_SEARCH = 'posts/index_search.html'
+# HTML_INDEX_SEARCH = 'posts/index_search.html'
 HTML_GROUP_LIST = 'posts/group_list.html'
 HTML_PROFILE = 'posts/profile.html'
 HTML_DETAIL = 'posts/post_detail.html'
@@ -60,8 +60,8 @@ def get_post_list(query, date_of, date_to, sort='pub_date',
     return post_list
 
 
-def index_search(request):
-    template = HTML_INDEX_SEARCH
+def index(request):
+    template = HTML_INDEX
     query = request.GET.get('q')
     date_of = request.GET.get('date_of')
     date_to = request.GET.get('date_to')
@@ -72,27 +72,30 @@ def index_search(request):
     post_list = get_post_list(query, date_of, date_to, sort,
                               direction)
 
-    page_obj = func_paginator(request, post_list)
+    # page_obj = func_paginator(request, post_list)
+    total_posts = Post.objects.all().count()
     context = {
-        'page_obj': page_obj,
+        # 'page_obj': page_obj,
+        'page_obj': post_list,
         'query': query,
         'date_of': date_of,
         'date_to': date_to,
         'sort': sort,
         'direction': direction,
         'titul': titul_query,
+        'total_posts': total_posts,
     }
     return render(request, template, context)
 
 
-def index(request):
+""" def index(request):
     template = HTML_INDEX
     post_list = Post.objects.select_related('author', 'group')
     page_obj = func_paginator(request, post_list)
     context = {
         'page_obj': page_obj,
     }
-    return render(request, template, context)
+    return render(request, template, context) """
 
 
 def group_posts(request, slug):
@@ -127,11 +130,11 @@ def post_detail(request, post_id):
     template = HTML_DETAIL
     post_obj = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
-    comments = Comment.objects.all()
+    # comments = Comment.objects.all()
     context = {
         'post': post_obj,
         'form': form,
-        'comments': comments,
+        # 'comments': comments,
     }
     return render(request, template, context)
 
