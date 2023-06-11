@@ -32,8 +32,8 @@
     <article>
       {% include 'includes/switcher.html' %}
       <div style="display: flex; flex-direction: row;">
-        <div style="height: 400px; overflow-y: auto;">
-          <table>
+        <div style="height: 400px; overflow-y: auto; overflow-x: hidden;">
+          <table style="width: 300px;">
             {% for post in page_obj %}
             <tr>
               <td>
@@ -45,7 +45,7 @@
                           <div style="text-align: left">{{ post.author.get_full_name }}</div>
                           <div style="text-align: right">{{ post.pub_date|date:"d E Y" }}</div>
                       </div>
-                      <div style="text-align: center;">{{ post.titul }}</div>
+                      <div style="text-align: center; font-size: 20px; color: #00fffa">{{ post.titul }}</div>
                   </li>
                 </ul>
               </td>
@@ -74,7 +74,7 @@
     </div>
     </article>
   </div>
-  <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
+  <p style="color: #000; padding: 10px; margin: 10px; font-size: 26px;">
     Записей <strong>{{ page_obj.count }}</strong> из <strong>{{ total_posts }}</strong>
   </p>
 {% endblock %}
