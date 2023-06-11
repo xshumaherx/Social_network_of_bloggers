@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -68,6 +68,17 @@ def index(request):
     sort = request.GET.get('sort', 'pub_date')
     direction = request.GET.get('direction', 'desc')
     titul_query = request.GET.get('titul')
+    post_id = request.GET.get('id')
+    post_text = None
+    try:
+        post_text = Post.objects.get(pk=post_id)
+        if post_text.image:
+            return JsonResponse({'text': post_text.text,
+                                'image': str(post_text.image.url)})
+        else:
+            return JsonResponse({'text': post_text.text})
+    except Post.DoesNotExist:
+        pass
 
     post_list = get_post_list(query, date_of, date_to, sort,
                               direction)
@@ -84,6 +95,7 @@ def index(request):
         'direction': direction,
         'titul': titul_query,
         'total_posts': total_posts,
+        'post_text': post_text,
     }
     return render(request, template, context)
 

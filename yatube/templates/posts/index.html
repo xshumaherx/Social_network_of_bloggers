@@ -31,15 +31,67 @@
     <br>
     <article>
       {% include 'includes/switcher.html' %}
-      <div style="display: flex;">
+      <div style="display: flex; flex-direction: row;">
         <div style="height: 400px; overflow-y: auto;">
           <table>
             {% for post in page_obj %}
             <tr>
               <td>
                 <ul class="list-group">
+                  <li class="list-group-item telegram-list__item"
+                      data-bs-target="#postId{{ post.pk }}" 
+                      onclick="showText({{ post.pk }}, this)">
+                      <div style="justify-content: space-between; font-size: 13px;">
+                          <div style="text-align: left">{{ post.author.get_full_name }}</div>
+                          <div style="text-align: right">{{ post.pub_date|date:"d E Y" }}</div>
+                      </div>
+                      <div style="text-align: center;">{{ post.titul }}</div>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td><h3 style="color:#fff">Публикации не найдены!</h3></td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div style="flex: 1;">
+          <table>
+            <tr>
+              <td>
+                <div>
+                  {% if post_image_url %}
+                    {% thumbnail post_image_url "960x339" crop="center" upscale=True as im %}
+                      <img class="card-img my-2" src="{{ im.url }}">
+                    {% endthumbnail %}
+                  {% endif %}
+                </div>
+                <div id="postText"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </article>
+  </div>
+  <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
+    Записей <strong>{{ page_obj.count }}</strong> из <strong>{{ total_posts }}</strong>
+  </p>
+{% endblock %}
+
+   {% comment %} <article>
+      {% include 'includes/switcher.html' %}
+      <div style="display: flex; flex-direction: row;">
+        <div style="height: 500px; overflow-y: auto;">
+          <table>
+            {% for post in page_obj %}
+            <tr>
+              <td>
+                <ul class="list-group">
                   <li class="list-group-item telegram-list__item" data-bs-toggle="modal" data-bs-target="#myModal{{ post.pk }}">
-                    <a href="#myModal{{ post.pk }}" data-bs-toggle="modal" data-bs-target="#myModal{{ post.pk }}">
+                    <a href="{% url 'posts:post_detail' post.pk %}">
                       <div style="justify-content: space-between; font-size: 13px;">
                         <div style="text-align: left">{{ post.author.get_full_name }}</div>
                         <div style="text-align: right">{{ post.pub_date|date:"d E Y" }}</div>
@@ -53,12 +105,12 @@
             {% endfor %}
           </table>
         </div>
-        <div>
-          <table>
-            {% for post in page_obj %}
+        <div style="flex: 1;">
+          {% for post in page_obj %}
+            <table>
             <tr>
               <td>
-                <!-- контент правого столбца -->
+                  {{ post.text }}
               </td>
             </tr>
             {% empty %}
@@ -71,8 +123,23 @@
           </table>
         </div>
       </div>
-
-
+      <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
+        Записей <strong>{{ page_obj.count }}</strong> из <strong>{{ total_posts }}</strong>
+      </p>
+    </article> {% endcomment %}
+{% comment %}             {% empty %}
+            <tr>
+              <td>
+                <h3 style="color:#fff">Публикации не найдены!</h3>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+      <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
+        Записей <strong>{{ page_obj.count }}</strong> из <strong>{{ total_posts }}</strong>
+      </p> {% endcomment %}
 
       {% comment %} <table>
         {% for post in page_obj %}
@@ -122,11 +189,5 @@
               </div>
             </div>
           </td> {% endcomment %}
-        
-      <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
-        Записей <strong>{{ page_obj.count }}</strong> из <strong>{{ total_posts }}</strong>
-    </p>
-      {% comment %} {% include 'includes/paginator.html' %} {% endcomment %}
-    </article>
-  </div>
-{% endblock %}
+
+          {% comment %} {% include 'includes/paginator.html' %} {% endcomment %}
