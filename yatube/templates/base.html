@@ -24,11 +24,29 @@
             if (data.image && data.image.trim() !== "") {
               $('#postImage').attr('src', data.image);
             } else {
-              $('#postImage').attr('src', '');
+              $('#postImage').removeAttr('src');
             }
           }
         });
       } 
+    </script> 
+    <script> 
+      document.addEventListener("DOMContentLoaded", function() {
+        var activeItem = document.querySelector(".list-group-item.active");
+
+        if (!activeItem) {
+            var postImageContainer = document.querySelector("#postImageContainer");
+            postImageContainer.style.display = "none";
+        }
+
+        var listItems = document.querySelectorAll(".list-group-item");
+        listItems.forEach(function(item) {
+            item.addEventListener("click", function() {
+                var postImageContainer = document.querySelector("#postImageContainer");
+                postImageContainer.style.display = "block";
+            });
+        });
+    });
     </script> 
     <link rel="shortcut icon" href="{% static "img/Yggdrasil.ico" %}">
     <title>

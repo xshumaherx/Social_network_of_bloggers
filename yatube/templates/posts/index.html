@@ -57,20 +57,21 @@
             {% endfor %}
           </table>
         </div>
-        <div style="flex: 1; ">
-          <table>
-            <tr>
-              <td>
-                <div>
-                  <img id="postImage" src="{{ postImage }}" style="object-fit: cover; width: 100%; height: 400px;" 
-                       alt="Изображение отсутсвует.">
-                </div>
-                <div id="postText"></div>
-              </td>
-            </tr>
-          </table>
-        </div>
+          <div style="flex: 1;">
+            <table>
+              <tr>
+                <td>
+                  <div id="postImageContainer">
+                    <img id="postImage" style="width: 100%;" src="" alt="Изображение отсутствует">
+                    <div id="postText">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
       </div>
+    </div>
     </article>
   </div>
   <p style="color: #000; padding: 10px; margin: 20px; font-size: 26px;">
