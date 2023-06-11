@@ -14,15 +14,21 @@
           activeListItem.classList.remove('active');
         }
         activeListItem = listItem;
+
         activeListItem.classList.add('active');
         $.ajax({
           url: window.location.origin + '/?id=' + postId,
           type: 'GET',
-          success: function(data) {
+          success: function(data) {    
             $('#postText').text(data.text);
+            if (data.image && data.image.trim() !== "") {
+              $('#postImage').attr('src', data.image);
+            } else {
+              $('#postImage').attr('src', '');
+            }
           }
         });
-      }
+      } 
     </script> 
     <link rel="shortcut icon" href="{% static "img/Yggdrasil.ico" %}">
     <title>

@@ -57,16 +57,13 @@
             {% endfor %}
           </table>
         </div>
-        <div style="flex: 1;">
+        <div style="flex: 1; ">
           <table>
             <tr>
               <td>
                 <div>
-                  {% if post_image_url %}
-                    {% thumbnail post_image_url "960x339" crop="center" upscale=True as im %}
-                      <img class="card-img my-2" src="{{ im.url }}">
-                    {% endthumbnail %}
-                  {% endif %}
+                  <img id="postImage" src="{{ postImage }}" style="object-fit: cover; width: 100%; height: 400px;" 
+                       alt="Изображение отсутсвует.">
                 </div>
                 <div id="postText"></div>
               </td>
