@@ -1,25 +1,66 @@
-  <nav class="navbar navbar-light" style="background-color: lightskyblue">
+{% load static %}
+<style>
+  body {
+    background-image: url("{% static 'img/фон.jpg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+  .text-center:hover .hover-panel {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .hover-panel {
+    display: none;
+    position: fixed;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    width: 50%;
+    padding: 1rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .hover-panel a {
+    color: #fff;
+    background-color: #007bff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1rem;
+  }
+  
+  .hover-panel p {
+    margin: 0;
+  } 
+</style>
+<nav class="navbar navbar-light" style="background-color: #41a0a7">
     <div class="container">
       {% load static %}
         <a class="navbar-brand" href="{% url 'posts:index' %}">
-          <img src="{% static 'img/logo.png' %}" 
+          <img src="{% static 'img/Yggdrasil.png' %}" 
             width="30" 
             height="30" 
             class="d-inline-block align-top" 
             alt="">
-          <span style="color:red">Ya</span>tube
+          <span style="color:red">Мифы</span> и легенды
         </a>
       {% with request.resolver_match.view_name as view_name %}
       <ul class="nav nav-pills">
         <li class="nav-item"> 
-          <a class="nav-link 
+          <a class="nav-link nav-link link-light
             {% if view_name  == 'about:author' %} 
               active
             {% endif %}"
             href="{% url 'about:author' %}">Об авторе</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link 
+          <a class="nav-link nav-link link-light 
             {% if view_name  == 'about:tech' %} 
               active
             {% endif %}"
@@ -27,7 +68,7 @@
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item"> 
-          <a class="nav-link
+          <a class="nav-link link-light
             {% if view_name  == 'posts:post_create' %} 
               active
             {% endif %}"
@@ -40,8 +81,8 @@
             {% endif %}" 
             href="{% url 'users:password_reset_form' %}">Изменить пароль</a>
         </li>
-        <li class="nav-item"> 
-          <a class="nav-link link-lightskyblue
+        <li class="nav-item">
+          <a class="nav-link nav-link link-light
             {% if view_name  == 'users:logout' %} 
               active
             {% endif %}" 
